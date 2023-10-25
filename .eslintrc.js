@@ -1,23 +1,5 @@
-export default {
-  env: {
-    browser: true,
-    es2021: true,
-  },
+module.exports = {
   extends: ['standard-with-typescript', 'prettier'],
-  overrides: [
-    {
-      env: {
-        node: true,
-      },
-      files: ['.eslintrc.{js,cjs}'],
-      parserOptions: {
-        sourceType: 'script',
-      },
-    },
-  ],
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
+  tsconfigRootDir: __dirname,
   rules: {},
 };

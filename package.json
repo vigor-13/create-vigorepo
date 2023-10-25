@@ -2,10 +2,11 @@
   "name": "create-vigorepo",
   "version": "0.1.0",
   "description": "Create a new Vigorepo",
-  "main": "index.js",
-  "keywords": [],
+  "keywords": [
+    "monorepo"
+  ],
   "author": "vigor-13",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
     "prepare": "husky install"
   },
