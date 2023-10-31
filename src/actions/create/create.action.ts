@@ -1,6 +1,6 @@
 import path from 'node:path';
 import chalk from 'chalk';
-import { Logger } from '../../utils';
+import { Logger, isOnline } from '../../utils';
 import { CreatePrompt as Prompt } from './create.prompt';
 import { CreateActionProps } from './create.type';
 
@@ -13,9 +13,15 @@ export const createAction = async (directory: CreateActionProps) => {
   logger.log();
 
   /**
-   * TODO: 온라인 여부 체크 및 패키지 매니저 옵션 체크
-   * - 오프라인이면 프로세스 종료
+   * 네트워크 상태 체크
    */
+  const online = await isOnline();
+  if (!online) {
+    logger.error(
+      'You appear to be offline. Please check your network connection and try again.',
+    );
+    process.exit(1);
+  }
 
   /**
    * 프롬프트로 프로젝트 생성 디렉토리 가져오기
