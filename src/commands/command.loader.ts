@@ -19,7 +19,11 @@ export class CommandLoader {
 
     this._program
       .argument('[project-directory]', 'set project directory')
-      .action(this._actions.createAction);
+      .action(this._actions.createAction)
+      .option(
+        '-t, --template [name]',
+        'An template to bootstrap the app with.',
+      );
   };
 
   private _build = () => {
