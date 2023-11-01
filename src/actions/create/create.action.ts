@@ -1,6 +1,7 @@
 import path from 'node:path';
 import chalk from 'chalk';
 import { Logger, isOnline } from '../../utils';
+import { ProjectBuilder } from '../../lib';
 import { CreatePrompt as Prompt } from './create.prompt';
 import { VALID_TEMPLATE } from './create.constants';
 import { CreateActionOptions, CreateActionProps } from './create.type';
@@ -14,14 +15,6 @@ export const createAction = async (
 
   logger.log(chalk.bold('\n>>> VIGOREPO\n'));
   logger.info("Welcone to Vigorepo! Let's get you set up with a new codebase.");
-
-  /**
-   * 유효한 탬플릿인지 확인
-   */
-  if (options.template && !VALID_TEMPLATE.includes(options.template)) {
-    logger.error(`${options.template} templates does not exist.`);
-    process.exit(1);
-  }
 
   /**
    * 네트워크 상태 체크
@@ -41,5 +34,21 @@ export const createAction = async (
   const relativeProjectDir = path.relative(process.cwd(), root);
   const projectDirIsCurrentDir = relativeProjectDir === '';
 
+  /**
+   * TODO: 레포지토리에서 템플릿 다운받기
+   */
+  const projectBuilder = new ProjectBuilder({
+    appPath: root,
+    templateInfo: {
+      username: 'vigor-13',
+      name: 'create-vigorepo',
+      branch: 'main',
+      template: options.template ? options.template : 'default',
+    },
+  });
+
+  try {
+    const projectData = await projectBuilder.createProject();
+  } catch (error) {}
   process.exit(1);
 };

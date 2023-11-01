@@ -19,11 +19,8 @@ export class CommandLoader {
 
     this._program
       .argument('[project-directory]', 'set project directory')
-      .action(this._actions.createAction)
-      .option(
-        '-t, --template [name]',
-        'An template to bootstrap the app with.',
-      );
+      .option('-t, --template [name]', 'An template to bootstrap the app with.')
+      .action(this._actions.createAction);
   };
 
   private _build = () => {
