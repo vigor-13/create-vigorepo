@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "root",
+  "version": "0.1.0",
+  "description": "default template",
+  "author": "",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "packageManager": "pnpm@8.6.10"
+}
