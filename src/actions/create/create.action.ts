@@ -41,9 +41,9 @@ export const createAction = async (
     appPath: root,
     templateInfo: {
       username: 'vigor-13',
-      name: 'create-vigorepo',
+      repoName: 'create-vigorepo',
       branch: 'main',
-      template: options.template ? options.template : 'default',
+      templateName: options.template ? options.template : 'default',
     },
   });
 
