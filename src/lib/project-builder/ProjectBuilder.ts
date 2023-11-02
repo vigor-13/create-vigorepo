@@ -25,7 +25,7 @@ export class ProjectBuilder {
 
   constructor(props: ProjectBuilderProps) {
     this._logger = new Logger();
-    this._repositoryLoader = new RepositoryLoader(props.templateInfo);
+    this._repositoryLoader = new RepositoryLoader(props);
     this._templateInfo = props.templateInfo;
     this._appPath = props.appPath;
     this._appName = path.basename(this._appPath);
@@ -66,7 +66,25 @@ export class ProjectBuilder {
     }
   };
 
-  private _cloneTemplateFromRepository = async () => {};
+  private _cloneTemplateFromRepository = async () => {
+    const spinner = this._logger.spinner('Downloading files...');
+
+    try {
+      this._logger.info(
+        `Downloading files from ${chalk.cyan(
+          this._templateInfo.templateName,
+        )} template. This might take a moment.`,
+      );
+      spinner.start();
+      await this._repositoryLoader.loadTemplate();
+    } catch (error) {
+      this._logger.error(error);
+      process.exit(1);
+    } finally {
+      spinner.stop();
+      this._logger.info('Download Completed!');
+    }
+  };
 
   public createProject = async () => {
     await this._checkIsValidTemplate();

@@ -18,6 +18,12 @@ export class Logger {
     };
   }
 
+  spinner = (message: string) => {
+    return ora({
+      text: message,
+    });
+  };
+
   log = (...args: Array<unknown>) => {
     console.log(...args);
   };

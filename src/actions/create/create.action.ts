@@ -50,5 +50,6 @@ export const createAction = async (
   try {
     const projectData = await projectBuilder.createProject();
   } catch (error) {}
+
   process.exit(1);
 };
