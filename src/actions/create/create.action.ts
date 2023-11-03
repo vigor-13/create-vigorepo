@@ -3,7 +3,6 @@ import chalk from 'chalk';
 import { Logger, isOnline } from '../../utils';
 import { ProjectBuilder } from '../../lib';
 import { CreatePrompt as Prompt } from './create.prompt';
-import { VALID_TEMPLATE } from './create.constants';
 import { CreateActionOptions, CreateActionProps } from './create.type';
 
 export const createAction = async (

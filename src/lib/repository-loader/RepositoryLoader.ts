@@ -6,12 +6,8 @@ import { createWriteStream, promises as fs } from 'node:fs';
 import got from 'got';
 import tar from 'tar';
 import chalk from 'chalk';
-import { Logger, isExistUrl } from '../utils';
-import { ProjectBuilderProps, TemplateInfo } from './project-builder';
-
-// function delay(ms: number) {
-//   return new Promise((resolve) => setTimeout(resolve, ms));
-// }
+import { Logger, isExistUrl } from '../../utils';
+import { ProjectBuilderProps, TemplateInfo } from '../project-builder';
 
 export class RepositoryLoader {
   private _logger: Logger;

@@ -2,7 +2,7 @@ import path from 'node:path';
 import chalk from 'chalk';
 import * as fs from 'fs-extra';
 import { Logger, PackageJson, isWriteable } from '../../utils';
-import { RepositoryLoader } from '../RepositoryLoader';
+import { RepositoryLoader } from '../repository-loader';
 
 export interface ProjectBuilderProps {
   appPath: string;
