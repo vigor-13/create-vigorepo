@@ -85,7 +85,8 @@ export const createAction = async (
   try {
     spinner.text = 'Installing dependencies...';
     spinner.start();
-    packageController.installDependencies();
+    await packageController.installDependencies();
+    gitController.gitCommit('build: install dependencies');
   } catch (error) {
     // TODO: Error handling
   } finally {
@@ -93,5 +94,13 @@ export const createAction = async (
     logger.info('dependencies installed');
   }
 
-  process.exit(1);
+  if (projectDirIsCurrentDir) {
+    logger.info(`${chalk.bold('Success!')} Your new Vigorepo is ready.`);
+  } else {
+    logger.info(
+      `${chalk.bold(
+        'Success!',
+      )} Created a new Vigorepo at "${relativeProjectDir}".`,
+    );
+  }
 };

@@ -25,7 +25,7 @@ export class GitController {
 
   private _gitCommit = (commitMessage: string) => {
     cp.execSync(
-      `git commit --author="Vigorbot <vigor13.dev@gmail.com>" -am "${commitMessage}"`,
+      `git commit --author="bot <vigor13.dev@gmail.com>" -am "${commitMessage}"`,
       { stdio: 'ignore' },
     );
   };
@@ -50,6 +50,16 @@ export class GitController {
         } catch (_) {}
       }
 
+      return false;
+    }
+  };
+
+  public gitCommit = (commitMessage: string): boolean => {
+    try {
+      cp.execSync('git add -A', { stdio: 'ignore' });
+      this._gitCommit(commitMessage);
+      return true;
+    } catch (error) {
       return false;
     }
   };
