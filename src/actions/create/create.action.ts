@@ -1,7 +1,7 @@
 import path from 'node:path';
 import chalk from 'chalk';
 import { Logger, isOnline } from '../../utils';
-import { ProjectBuilder } from '../../lib';
+import { ProjectBuilder, GitController, PackageController } from '../../lib';
 import { CreatePrompt as Prompt } from './create.prompt';
 import { CreateActionOptions, CreateActionProps } from './create.type';
 
@@ -10,6 +10,7 @@ export const createAction = async (
   options: CreateActionOptions,
 ) => {
   const logger = new Logger();
+  const spinner = logger.spinner('');
   const prompt = new Prompt(directory);
 
   logger.log(chalk.bold('\n>>> VIGOREPO\n'));
@@ -49,9 +50,47 @@ export const createAction = async (
     ReturnType<typeof projectBuilder.createProject>
   >;
   try {
+    logger.info(
+      `Downloading files from ${chalk.cyan(
+        options.template,
+      )} template. This might take a moment.`,
+    );
+    spinner.text = 'Downloading files...';
+    spinner.start();
     projectData = await projectBuilder.createProject();
   } catch (error) {
     // TODO: Error handling
+  } finally {
+    spinner.stop();
+    logger.info('Download Completed!');
+  }
+
+  /**
+   * 프로젝트 Git 초기화
+   */
+  const gitController = new GitController({
+    appPath: projectData.cdPath,
+  });
+  gitController.gitInit({
+    commitMessage: 'feat: Initial commit',
+  });
+
+  /**
+   * 프로젝트 install 실행
+   */
+  const packageController = new PackageController({
+    appPath: projectData.cdPath,
+  });
+  logger.info('Installing packages. This might take a couple of minutes.');
+  try {
+    spinner.text = 'Installing dependencies...';
+    spinner.start();
+    packageController.installDependencies();
+  } catch (error) {
+    // TODO: Error handling
+  } finally {
+    spinner.stop();
+    logger.info('dependencies installed');
   }
 
   process.exit(1);
