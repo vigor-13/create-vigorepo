@@ -33,10 +33,6 @@ export const createAction = async (
   const { root, projectName } = await prompt.getProjectDirectory();
   const relativeProjectDir = path.relative(process.cwd(), root);
   const projectDirIsCurrentDir = relativeProjectDir === '';
-
-  /**
-   * TODO: 레포지토리에서 템플릿 다운받기
-   */
   const projectBuilder = new ProjectBuilder({
     appPath: root,
     templateInfo: {
@@ -47,9 +43,17 @@ export const createAction = async (
     },
   });
 
+  /**
+   * 템플릿 다운받기
+   */
+  let projectData = {} as Awaited<
+    ReturnType<typeof projectBuilder.createProject>
+  >;
   try {
-    const projectData = await projectBuilder.createProject();
-  } catch (error) {}
+    projectData = await projectBuilder.createProject();
+  } catch (error) {
+    // TODO: Error handling
+  }
 
   process.exit(1);
 };

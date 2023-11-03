@@ -1,7 +1,7 @@
 import path from 'node:path';
 import chalk from 'chalk';
 import * as fs from 'fs-extra';
-import { Logger, isWriteable } from '../../utils';
+import { Logger, PackageJson, isWriteable } from '../../utils';
 import { RepositoryLoader } from '../RepositoryLoader';
 
 export interface ProjectBuilderProps {
@@ -86,10 +86,37 @@ export class ProjectBuilder {
     }
   };
 
+  private _extractProjectData = async () => {
+    const rootPackageJsonPath = path.join(this._appPath, 'package.json');
+    const hasPackageJson = fs.existsSync(rootPackageJsonPath);
+    const availableScripts = [];
+
+    if (hasPackageJson) {
+      let packageJsonContent;
+      try {
+        packageJsonContent = fs.readJsonSync(
+          rootPackageJsonPath,
+        ) as PackageJson;
+      } catch (error) {}
+
+      if (packageJsonContent) {
+        availableScripts.push(...Object.keys(packageJsonContent.scripts || {}));
+      }
+    }
+
+    return {
+      cdPath: this._appPath,
+      hasPackageJson,
+      availableScripts,
+    };
+  };
+
   public createProject = async () => {
     await this._checkIsValidTemplate();
     await this._createProjectDirectory();
     process.chdir(this._appPath);
     await this._cloneTemplateFromRepository();
+    const projectData = this._extractProjectData();
+    return projectData;
   };
 }
