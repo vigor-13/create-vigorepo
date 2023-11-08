@@ -1,16 +1,15 @@
 import * as Commander from 'commander';
 import * as packageJson from '../../package.json';
-import * as actioins from '../actions';
+import { CreateAction } from '../actions';
+import { CreateActionOptions } from '../actions/create/create.type';
 
 export class CommandLoader {
   private _program: Commander.Command;
   private _pkgJson: any;
-  private _actions: any;
 
   constructor() {
     this._program = new Commander.Command();
     this._pkgJson = packageJson;
-    this._actions = actioins;
   }
 
   private _buildDefaultAction = () => {
@@ -24,7 +23,15 @@ export class CommandLoader {
         'An template to bootstrap the app with.',
         'default',
       )
-      .action(this._actions.createAction);
+      .action(
+        async (directory: string | undefined, options: Commander.Command) => {
+          const createAction = new CreateAction(
+            directory,
+            options as CreateActionOptions,
+          );
+          await createAction.handle();
+        },
+      );
   };
 
   private _build = () => {

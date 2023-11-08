@@ -17,8 +17,8 @@ export class CreatePrompt {
       when: !this._directory,
       type: 'input',
       name: 'projectDirectory',
-      message: 'Where would you like to create your vigorepo?',
-      default: './my-vigorepo',
+      message: 'Where would you like to create your project?',
+      default: './my-project',
       validate: (dir: string) => {
         const { valid, error } = validateDirectory(dir);
         if (!valid && error) return error;
@@ -32,7 +32,10 @@ export class CreatePrompt {
     }>(inquirerOption);
 
     const { projectDirectory: projectDirectory } = projectDirectoryFromPrompt;
-    const result = validateDirectory(projectDirectory);
+
+    const result = validateDirectory(
+      this._directory ? this._directory : projectDirectory,
+    );
 
     return result;
   };

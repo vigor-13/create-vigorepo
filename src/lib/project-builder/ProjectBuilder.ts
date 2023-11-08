@@ -16,6 +16,12 @@ export type TemplateInfo = {
   templateName: string;
 };
 
+export interface ProjectBuildData {
+  cdPath: string;
+  hasPackageJson: boolean;
+  availableScripts: string[];
+}
+
 export class ProjectBuilder {
   private _logger: Logger;
   private _appPath: string;
