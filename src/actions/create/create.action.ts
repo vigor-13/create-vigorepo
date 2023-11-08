@@ -1,7 +1,12 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import chalk from 'chalk';
-import { CustomError, Logger, isOnline } from '../../utils';
+import {
+  CustomError,
+  Logger,
+  isOnline,
+  printWelcomeMessage,
+} from '../../utils';
 import {
   ProjectBuilder,
   GitController,
@@ -148,10 +153,11 @@ export class CreateAction {
   };
 
   public handle = async () => {
-    this._logger.log(chalk.bold('\n>>> VIGOREPO\n'));
-    this._logger.info(
-      "Welcone to Vigorepo! Let's get you set up with a new codebase.",
-    );
+    // this._logger.log(chalk.bold('\n>>> VIGOREPO\n'));
+    // this._logger.info(
+    //   "Welcone to Vigorepo! Let's get you set up with a new codebase.",
+    // );
+    printWelcomeMessage();
 
     try {
       await this._checkNetwork();

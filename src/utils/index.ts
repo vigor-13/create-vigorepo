@@ -6,3 +6,4 @@ export * from './isExistUrl';
 export * from './isWriteable';
 export * from './types';
 export * from './CustomError';
+export * from './printWelcomeMessage';
