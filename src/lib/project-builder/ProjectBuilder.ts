@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import * as fs from 'fs-extra';
 import { Logger, PackageJson, isWriteable } from '../../utils';
 import { RepositoryLoader } from '../repository-loader';
+import { ProjectBuildError } from './ProjectBuilder.error';
 
 export interface ProjectBuilderProps {
   appPath: string;
@@ -27,37 +28,31 @@ export class ProjectBuilder {
   private _appPath: string;
   private _templateInfo: TemplateInfo;
   private _repositoryLoader: RepositoryLoader;
-  private _appName: string;
 
   constructor(props: ProjectBuilderProps) {
     this._logger = new Logger();
     this._repositoryLoader = new RepositoryLoader(props);
     this._templateInfo = props.templateInfo;
     this._appPath = props.appPath;
-    this._appName = path.basename(this._appPath);
   }
 
   private _checkIsValidTemplate = async () => {
     const isExistTemplate = await this._repositoryLoader.checkTemplate();
     if (!isExistTemplate) {
-      this._logger.error(
+      throw new ProjectBuildError(
         `Could not found the ${chalk.red(
           `"${this._templateInfo.templateName}"`,
         )} template`,
       );
-      process.exit(1);
     }
   };
 
   private _checkIsWriteableDirectory = async () => {
     if (!(await isWriteable(path.dirname(this._appPath)))) {
-      this._logger.error(
-        'The application path is not writable, please check folder permissions and try again.',
+      throw new ProjectBuildError(
+        `The application path is not writable, please check folder permissions and try again. 
+        \nIt is likely you do not have write permissions for this folder.`,
       );
-      this._logger.error(
-        'It is likely you do not have write permissions for this folder.',
-      );
-      process.exit(1);
     }
   };
 
@@ -66,9 +61,9 @@ export class ProjectBuilder {
     try {
       await fs.mkdir(this._appPath, { recursive: true });
     } catch (error) {
-      this._logger.error('Unable to create project directory');
-      this._logger.error(error);
-      process.exit(1);
+      throw new ProjectBuildError(
+        `Unable to create project directory, ${error}`,
+      );
     }
   };
 
@@ -76,8 +71,7 @@ export class ProjectBuilder {
     try {
       await this._repositoryLoader.loadTemplate();
     } catch (error) {
-      this._logger.error(error);
-      process.exit(1);
+      throw new ProjectBuildError(`${error}`);
     }
   };
 

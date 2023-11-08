@@ -9,9 +9,6 @@ export class CreatePrompt {
     this._directory = dirctory;
   }
 
-  /**
-   * Get directory path from user.
-   */
   public getProjectDirectory = async () => {
     const inquirerOption: QuestionCollection = {
       when: !this._directory,
@@ -19,11 +16,6 @@ export class CreatePrompt {
       name: 'projectDirectory',
       message: 'Where would you like to create your project?',
       default: './my-project',
-      validate: (dir: string) => {
-        const { valid, error } = validateDirectory(dir);
-        if (!valid && error) return error;
-        return true;
-      },
       filter: (dir: string) => dir.trim(),
     };
 

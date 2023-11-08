@@ -1,6 +1,7 @@
 import path from 'node:path';
+import fs from 'node:fs';
 import chalk from 'chalk';
-import { Logger, isOnline } from '../../utils';
+import { CustomError, Logger, isOnline } from '../../utils';
 import {
   ProjectBuilder,
   GitController,
@@ -9,6 +10,11 @@ import {
 } from '../../lib';
 import { CreatePrompt as Prompt } from './create.prompt';
 import { CreateActionOptions, CreateActionProps } from './create.type';
+import {
+  InitializeError,
+  NetworkConnectionError,
+  WrongDirectoryError,
+} from './create.error';
 
 interface ProjectInfo {
   name: string; // ex. projectName
@@ -32,16 +38,18 @@ export class CreateAction {
 
   private _checkNetwork = async () => {
     const online = await isOnline();
-    if (!online) {
-      this._logger.error(
-        'You appear to be offline. Please check your network connection and try again.',
-      );
-      process.exit(1);
-    }
+    if (!online) throw new NetworkConnectionError();
   };
 
   private _setProjectInfo = async () => {
-    const { root, projectName } = await this._prompt.getProjectDirectory();
+    const {
+      root,
+      projectName,
+      error,
+    } = await this._prompt.getProjectDirectory();
+
+    if (error) throw new WrongDirectoryError(error);
+
     this._projectInfo = {
       name: projectName,
       template: this._options.template ? this._options.template : 'default',
@@ -73,14 +81,13 @@ export class CreateAction {
       this._spinner.text = 'Downloading files...';
       this._spinner.start();
       result = await projectBuilder.createProject();
+      this._projectData = result;
+      this._logger.info('Download Completed!');
     } catch (error) {
-      // TODO: Error handling
+      if (error instanceof CustomError) throw error;
     } finally {
       this._spinner.stop();
-      this._logger.info('Download Completed!');
     }
-
-    this._projectData = result;
   };
 
   private _initializeGit = async () => {
@@ -89,6 +96,7 @@ export class CreateAction {
     const gitController = new GitController({
       appPath: this._projectData.cdPath,
     });
+
     gitController.gitInit({
       commitMessage: 'feat: Initial commit',
     });
@@ -112,11 +120,31 @@ export class CreateAction {
       await packageController.installDependencies();
       this._gitController.gitCommit('build: install dependencies');
     } catch (error) {
-      // TODO: Error handling
+      throw new InitializeError(
+        `Something went worng while installing dependencies, ${error}`,
+      );
     } finally {
       this._spinner.stop();
       this._logger.info('dependencies installed');
     }
+  };
+
+  private _cleanup = async () => {
+    if (this._projectData?.cdPath) {
+      fs.rmSync(this._projectData.cdPath, { recursive: true, force: true });
+    }
+  };
+
+  private _errorHandler = (error: any) => {
+    if (error instanceof CustomError) {
+      this._logger.error(error.message);
+      if (error.isCleanup) this._cleanup();
+      if (error.exitCode) process.exit(error.exitCode);
+      return;
+    }
+
+    this._logger.error(error);
+    process.exit(1);
   };
 
   public handle = async () => {
@@ -125,11 +153,15 @@ export class CreateAction {
       "Welcone to Vigorepo! Let's get you set up with a new codebase.",
     );
 
-    await this._checkNetwork();
-    await this._setProjectInfo();
-    await this._createProject();
-    await this._initializeGit();
-    await this._installDependencies();
+    try {
+      await this._checkNetwork();
+      await this._setProjectInfo();
+      await this._createProject();
+      await this._initializeGit();
+      await this._installDependencies();
+    } catch (error) {
+      this._errorHandler(error);
+    }
 
     const relativeProjectDir = path.relative(
       process.cwd(),
