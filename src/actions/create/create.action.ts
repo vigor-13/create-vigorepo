@@ -87,11 +87,11 @@ export class CreateAction {
       this._spinner.start();
       result = await projectBuilder.createProject();
       this._projectData = result;
+      this._spinner.stop();
       this._logger.info('Download Completed!');
     } catch (error) {
-      if (error instanceof CustomError) throw error;
-    } finally {
       this._spinner.stop();
+      if (error instanceof CustomError) throw error;
     }
   };
 

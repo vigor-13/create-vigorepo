@@ -29,14 +29,14 @@ export class Logger {
   };
 
   info = (...args: Array<unknown>) => {
-    this.log(this._chalks.info('>>>'), ...args);
+    this.log(this._chalks.info('🚥'), ...args);
   };
 
   warn = (...args: Array<unknown>) => {
-    console.error(this._chalks.warn('>>>', ...args));
+    console.error(this._chalks.warn('🚥', ...args));
   };
 
   error = (...args: Array<unknown>) => {
-    console.error(this._chalks.error('>>>', ...args));
+    console.error(this._chalks.error('🚥', ...args));
   };
 }
