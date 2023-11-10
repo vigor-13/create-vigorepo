@@ -153,10 +153,6 @@ export class CreateAction {
   };
 
   public handle = async () => {
-    // this._logger.log(chalk.bold('\n>>> VIGOREPO\n'));
-    // this._logger.info(
-    //   "Welcone to Vigorepo! Let's get you set up with a new codebase.",
-    // );
     printWelcomeMessage();
 
     try {

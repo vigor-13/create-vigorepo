@@ -21,7 +21,7 @@ export class CommandLoader {
       .option(
         '-t, --template [name]',
         'An template to bootstrap the app with.',
-        'default',
+        'polyrepo',
       )
       .action(
         async (directory: string | undefined, options: Commander.Command) => {
