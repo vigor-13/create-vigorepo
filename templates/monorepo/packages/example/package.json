@@ -1,0 +1,12 @@
+{
+  "name": "example",
+  "description": "This is Example Package.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "pn build"
+  },
+  "devDependencies": {
+    "tsconfig": "workspace:*"
+  }
+}
