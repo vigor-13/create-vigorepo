@@ -16,6 +16,9 @@ coverage
 # Turbo
 .turbo
 
+# Outputs
+dist
+
 # misc
 # .DS_Store
 # *.pem
