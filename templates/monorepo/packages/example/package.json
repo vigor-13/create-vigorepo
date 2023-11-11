@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "pn build"
+    "dev": "node ./dist/index.js"
   },
   "devDependencies": {
     "tsconfig": "workspace:*"
