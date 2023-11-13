@@ -16,6 +16,7 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.2",
     "@commitlint/cli": "^18.1.0",
     "@commitlint/config-conventional": "^18.1.0",
     "@types/cli-welcome": "^2.2.2",
