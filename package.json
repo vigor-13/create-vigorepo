@@ -1,6 +1,6 @@
 {
   "name": "create-vigorepo",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Create a new Vigorepo",
   "keywords": [
     "monorepo"
@@ -10,6 +10,9 @@
   "bin": {
     "create-vigorepo": "./dist/bin/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prepare": "husky install",
     "build": "tsup",
