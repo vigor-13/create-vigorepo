@@ -7,7 +7,7 @@
 다음의 명령어를 사용하여 레포지토리 템플릿을 설치할 수 있다.
 
 ```bash
-npx create-turbo@latest
+npx create-vigorepo@latest
 ```
 
 ## 옵션
@@ -15,5 +15,5 @@ npx create-turbo@latest
 - `-t <template-name>`: 설치할 템플릿을 지정한다.
 
 ```bash
-npx create-turbo@latest -t monorepo
+npx create-vigorepo@latest -t monorepo
 ```
