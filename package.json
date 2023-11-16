@@ -8,7 +8,7 @@
   "author": "vigor-13",
   "license": "MIT",
   "bin": {
-    "create-vigorepo": "./dist/bin/index.js"
+    "create-vigorepo": "./dist/index.js"
   },
   "files": [
     "dist"
