@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "eslint-config-custom",
+  "version": "0.1.0",
+  "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-standard-with-typescript": "^40.0.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  }
+}

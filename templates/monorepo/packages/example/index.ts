@@ -1,1 +1,2 @@
-console.log('This is example package.');
+const greeting: string = 'This is example package.';
+console.log(greeting);
