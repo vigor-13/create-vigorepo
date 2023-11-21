@@ -16,7 +16,8 @@
   "scripts": {
     "prepare": "husky install",
     "build": "tsup",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",

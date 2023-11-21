@@ -11,10 +11,13 @@ import {
   ProjectBuilder,
   GitController,
   PackageController,
-  ProjectBuildData,
+  type ProjectBuildData,
 } from '../../lib';
 import { CreatePrompt as Prompt } from './create.prompt';
-import { CreateActionOptions, CreateActionProps } from './create.type';
+import {
+  type CreateActionOptions,
+  type CreateActionProps,
+} from './create.type';
 import {
   InitializeError,
   NetworkConnectionError,
@@ -28,11 +31,11 @@ interface ProjectInfo {
 }
 
 export class CreateAction {
-  private _logger = new Logger();
-  private _spinner = this._logger.spinner('');
-  private _prompt: Prompt;
+  private readonly _logger = new Logger();
+  private readonly _spinner = this._logger.spinner('');
+  private readonly _prompt: Prompt;
   private _gitController: GitController | null = null;
-  private _options: CreateActionOptions;
+  private readonly _options: CreateActionOptions;
   private _projectInfo: ProjectInfo | null = null;
   private _projectData: ProjectBuildData | null = null;
 
@@ -41,17 +44,14 @@ export class CreateAction {
     this._prompt = new Prompt(directory);
   }
 
-  private _checkNetwork = async () => {
+  private readonly _checkNetwork = async () => {
     const online = await isOnline();
     if (!online) throw new NetworkConnectionError();
   };
 
-  private _setProjectInfo = async () => {
-    const {
-      root,
-      projectName,
-      error,
-    } = await this._prompt.getProjectDirectory();
+  private readonly _setProjectInfo = async () => {
+    const { root, projectName, error } =
+      await this._prompt.getProjectDirectory();
 
     if (error) throw new WrongDirectoryError(error);
 
@@ -62,7 +62,7 @@ export class CreateAction {
     };
   };
 
-  private _createProject = async () => {
+  private readonly _createProject = async () => {
     if (!this._projectInfo) return;
 
     const projectBuilder = new ProjectBuilder({
@@ -95,7 +95,7 @@ export class CreateAction {
     }
   };
 
-  private _initializeGit = async () => {
+  private readonly _initializeGit = async () => {
     if (!this._projectData) return;
 
     const gitController = new GitController({
@@ -109,7 +109,7 @@ export class CreateAction {
     this._gitController = gitController;
   };
 
-  private _installDependencies = async () => {
+  private readonly _installDependencies = async () => {
     if (!this._projectData || !this._gitController) return;
 
     const packageController = new PackageController({
@@ -134,13 +134,13 @@ export class CreateAction {
     }
   };
 
-  private _cleanup = async () => {
+  private readonly _cleanup = async () => {
     if (this._projectData?.cdPath) {
       fs.rmSync(this._projectData.cdPath, { recursive: true, force: true });
     }
   };
 
-  private _errorHandler = (error: any) => {
+  private readonly _errorHandler = (error: any) => {
     if (error instanceof CustomError) {
       this._logger.error(error.message);
       if (error.isCleanup) this._cleanup();
