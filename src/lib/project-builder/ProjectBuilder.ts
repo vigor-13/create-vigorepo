@@ -1,7 +1,7 @@
 import path from 'node:path';
 import chalk from 'chalk';
 import * as fs from 'fs-extra';
-import { Logger, PackageJson, isWriteable } from '../../utils';
+import { Logger, type PackageJson, isWriteable } from '../../utils';
 import { RepositoryLoader } from '../repository-loader';
 import { ProjectBuildError } from './ProjectBuilder.error';
 
@@ -10,12 +10,12 @@ export interface ProjectBuilderProps {
   templateInfo: TemplateInfo;
 }
 
-export type TemplateInfo = {
+export interface TemplateInfo {
   username: 'vigor-13';
   repoName: 'create-vigorepo';
   branch: 'main';
   templateName: string;
-};
+}
 
 export interface ProjectBuildData {
   cdPath: string;
@@ -24,10 +24,10 @@ export interface ProjectBuildData {
 }
 
 export class ProjectBuilder {
-  private _logger: Logger;
-  private _appPath: string;
-  private _templateInfo: TemplateInfo;
-  private _repositoryLoader: RepositoryLoader;
+  private readonly _logger: Logger;
+  private readonly _appPath: string;
+  private readonly _templateInfo: TemplateInfo;
+  private readonly _repositoryLoader: RepositoryLoader;
 
   constructor(props: ProjectBuilderProps) {
     this._logger = new Logger();
@@ -36,7 +36,7 @@ export class ProjectBuilder {
     this._appPath = props.appPath;
   }
 
-  private _checkIsValidTemplate = async () => {
+  private readonly _checkIsValidTemplate = async (): Promise<void> => {
     const isExistTemplate = await this._repositoryLoader.checkTemplate();
     if (!isExistTemplate) {
       throw new ProjectBuildError(
@@ -47,7 +47,7 @@ export class ProjectBuilder {
     }
   };
 
-  private _checkIsWriteableDirectory = async () => {
+  private readonly _checkIsWriteableDirectory = async (): Promise<void> => {
     if (!(await isWriteable(path.dirname(this._appPath)))) {
       throw new ProjectBuildError(
         `The application path is not writable, please check folder permissions and try again. 
@@ -56,26 +56,27 @@ export class ProjectBuilder {
     }
   };
 
-  private _createProjectDirectory = async () => {
-    this._checkIsWriteableDirectory();
+  private readonly _createProjectDirectory = async (): Promise<void> => {
+    await this._checkIsWriteableDirectory();
+
     try {
       await fs.mkdir(this._appPath, { recursive: true });
-    } catch (error) {
+    } catch (error: any) {
       throw new ProjectBuildError(
         `Unable to create project directory, ${error}`,
       );
     }
   };
 
-  private _cloneTemplateFromRepository = async () => {
+  private readonly _cloneTemplateFromRepository = async (): Promise<void> => {
     try {
       await this._repositoryLoader.loadTemplate();
-    } catch (error) {
+    } catch (error: any) {
       throw new ProjectBuildError(`${error}`);
     }
   };
 
-  private _extractProjectData = async () => {
+  private readonly _extractProjectData = async (): Promise<any> => {
     const rootPackageJsonPath = path.join(this._appPath, 'package.json');
     const hasPackageJson = fs.existsSync(rootPackageJsonPath);
     const availableScripts = [];
@@ -88,8 +89,8 @@ export class ProjectBuilder {
         ) as PackageJson;
       } catch (error) {}
 
-      if (packageJsonContent) {
-        availableScripts.push(...Object.keys(packageJsonContent.scripts || {}));
+      if (packageJsonContent !== undefined) {
+        availableScripts.push(...Object.keys(packageJsonContent.scripts ?? {}));
       }
     }
 
@@ -100,12 +101,12 @@ export class ProjectBuilder {
     };
   };
 
-  public createProject = async () => {
+  public createProject = async (): Promise<any> => {
     await this._checkIsValidTemplate();
     await this._createProjectDirectory();
     process.chdir(this._appPath);
     await this._cloneTemplateFromRepository();
     const projectData = this._extractProjectData();
-    return projectData;
+    return await projectData;
   };
 }

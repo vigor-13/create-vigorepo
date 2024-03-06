@@ -17,11 +17,10 @@ export class WrongDirectoryError extends CustomError {
   isCleanup?: boolean = false;
 
   constructor(message?: string) {
-    super(
-      message
-        ? message
-        : 'Something went worng - please try a different location',
-    );
+    let _message = 'Something went worng - please try a different location';
+    if (message !== undefined) _message = message;
+
+    super(_message);
     Object.setPrototypeOf(this, WrongDirectoryError.prototype);
   }
 }
@@ -31,7 +30,10 @@ export class InitializeError extends CustomError {
   isCleanup?: boolean = false;
 
   constructor(message?: string) {
-    super(message ? message : 'Something went worng');
+    let _message = 'Something went worng';
+    if (message !== undefined) _message = message;
+
+    super(_message);
     Object.setPrototypeOf(this, InitializeError.prototype);
   }
 }

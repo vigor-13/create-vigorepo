@@ -1,17 +1,17 @@
-import inquirer, { QuestionCollection } from 'inquirer';
-import { validateDirectory } from '../../utils';
-import { CreateActionProps } from './create.type';
+import inquirer, { type QuestionCollection } from 'inquirer';
+import { validateDirectory, type validateDirectoryResponse } from '../../utils';
+import { type CreateActionProps } from './create.type';
 
 export class CreatePrompt {
-  private _directory: CreateActionProps;
+  private readonly _directory: CreateActionProps;
 
   constructor(dirctory: CreateActionProps) {
     this._directory = dirctory;
   }
 
-  public getProjectDirectory = async () => {
+  public getProjectDirectory = async (): Promise<validateDirectoryResponse> => {
     const inquirerOption: QuestionCollection = {
-      when: !this._directory,
+      when: this._directory === undefined,
       type: 'input',
       name: 'projectDirectory',
       message: 'Where would you like to create your project?',
@@ -23,11 +23,8 @@ export class CreatePrompt {
       projectDirectory: string;
     }>(inquirerOption);
 
-    const { projectDirectory: projectDirectory } = projectDirectoryFromPrompt;
-
-    const result = validateDirectory(
-      this._directory ? this._directory : projectDirectory,
-    );
+    const { projectDirectory } = projectDirectoryFromPrompt;
+    const result = validateDirectory(this._directory ?? projectDirectory);
 
     return result;
   };

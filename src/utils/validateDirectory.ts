@@ -1,5 +1,5 @@
 import path from 'node:path';
-import fs, { exists } from 'fs-extra';
+import fs from 'fs-extra';
 import chalk from 'chalk';
 import { isFolderEmpty } from './isFolderEmpty';
 
@@ -19,7 +19,7 @@ export const validateDirectory = (
   const stat = fs.lstatSync(root, { throwIfNoEntry: false });
 
   // Check if it is a directory or not
-  if (stat && !stat.isDirectory()) {
+  if (stat !== undefined && !stat.isDirectory()) {
     return {
       valid: false,
       root,
