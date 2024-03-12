@@ -1,6 +1,6 @@
 {
   "name": "create-vigorepo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Create a new Vigorepo",
   "keywords": [
     "monorepo"
@@ -16,6 +16,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "tsup",
+    "publish": "npm publish",
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/*.{ts,tsx}\""
   },
