@@ -14,7 +14,7 @@ export interface PackageJson extends DependencyGroups {
   description?: string;
   author: string;
   // there can be more in here, but we only care about packages
-  workspaces?: Array<string> | { packages?: Array<string> };
+  workspaces?: string[] | { packages?: string[] };
   main?: string;
   module?: string;
   exports?: object;

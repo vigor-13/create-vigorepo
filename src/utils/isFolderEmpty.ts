@@ -25,7 +25,7 @@ const VALID_FILES = [
 
 interface isFolderEmptyResponse {
   isEmpty: boolean;
-  conflicts: Array<string>;
+  conflicts: string[];
 }
 
 export const isFolderEmpty = (directory: string): isFolderEmptyResponse => {

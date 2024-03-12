@@ -5,7 +5,7 @@ export class ProjectBuildError extends CustomError {
   isCleanup?: boolean = true;
 
   constructor(message?: string) {
-    super(message ? message : 'Something went worng');
+    super(message ?? 'Something went worng');
     Object.setPrototypeOf(this, ProjectBuildError.prototype);
   }
 }

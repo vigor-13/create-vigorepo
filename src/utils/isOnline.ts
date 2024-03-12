@@ -1,10 +1,13 @@
 import dns from 'node:dns';
 
-export const isOnline = () => {
-  return new Promise((resolve) => {
+export const isOnline = async (): Promise<boolean> => {
+  return await new Promise((resolve) => {
     dns.lookup('registry.npmjs.org', (error) => {
-      if (!error) return resolve(true);
-      return resolve(false);
+      if (error !== null) {
+        resolve(false);
+        return;
+      }
+      resolve(true);
     });
   });
 };

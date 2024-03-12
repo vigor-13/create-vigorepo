@@ -34,8 +34,8 @@ export class CreateAction {
   private readonly _logger = new Logger();
   private readonly _spinner = this._logger.spinner('');
   private readonly _prompt: Prompt;
-  private _gitController: GitController | null = null;
   private readonly _options: CreateActionOptions;
+  private _gitController: GitController | null = null;
   private _projectInfo: ProjectInfo | null = null;
   private _projectData: ProjectBuildData | null = null;
 
@@ -44,26 +44,28 @@ export class CreateAction {
     this._prompt = new Prompt(directory);
   }
 
-  private readonly _checkNetwork = async () => {
+  private readonly _checkNetwork = async (): Promise<void> => {
     const online = await isOnline();
     if (!online) throw new NetworkConnectionError();
   };
 
-  private readonly _setProjectInfo = async () => {
+  private readonly _setProjectInfo = async (): Promise<void> => {
     const { root, projectName, error } =
       await this._prompt.getProjectDirectory();
+    if (error !== undefined) throw new WrongDirectoryError(error);
 
-    if (error) throw new WrongDirectoryError(error);
+    let template = 'default';
+    if (this._options.template !== undefined) template = this._options.template;
 
     this._projectInfo = {
       name: projectName,
-      template: this._options.template ? this._options.template : 'default',
+      template,
       directory: root,
     };
   };
 
-  private readonly _createProject = async () => {
-    if (!this._projectInfo) return;
+  private readonly _createProject = async (): Promise<void> => {
+    if (this._projectInfo === null) return;
 
     const projectBuilder = new ProjectBuilder({
       appPath: this._projectInfo.directory,
@@ -75,7 +77,7 @@ export class CreateAction {
       },
     });
 
-    let result = {} as Awaited<ReturnType<typeof projectBuilder.createProject>>;
+    let result: Awaited<ReturnType<typeof projectBuilder.createProject>>;
 
     try {
       this._logger.info(
@@ -95,8 +97,8 @@ export class CreateAction {
     }
   };
 
-  private readonly _initializeGit = async () => {
-    if (!this._projectData) return;
+  private readonly _initializeGit = async (): Promise<void> => {
+    if (this._projectData === null) return;
 
     const gitController = new GitController({
       appPath: this._projectData.cdPath,
@@ -109,8 +111,9 @@ export class CreateAction {
     this._gitController = gitController;
   };
 
-  private readonly _installDependencies = async () => {
-    if (!this._projectData || !this._gitController) return;
+  private readonly _installDependencies = async (): Promise<void> => {
+    if (this._projectData === null) return;
+    if (this._gitController === null) return;
 
     const packageController = new PackageController({
       appPath: this._projectData.cdPath,
@@ -124,7 +127,7 @@ export class CreateAction {
       this._spinner.start();
       await packageController.installDependencies();
       this._gitController.gitCommit('build: install dependencies');
-    } catch (error) {
+    } catch (error: any) {
       throw new InitializeError(
         `Something went worng while installing dependencies, ${error}`,
       );
@@ -134,17 +137,17 @@ export class CreateAction {
     }
   };
 
-  private readonly _cleanup = async () => {
-    if (this._projectData?.cdPath) {
+  private readonly _cleanup = (): void => {
+    if (this._projectData !== null) {
       fs.rmSync(this._projectData.cdPath, { recursive: true, force: true });
     }
   };
 
-  private readonly _errorHandler = (error: any) => {
+  private readonly _errorHandler = (error: any): void => {
     if (error instanceof CustomError) {
       this._logger.error(error.message);
-      if (error.isCleanup) this._cleanup();
-      if (error.exitCode) process.exit(error.exitCode);
+      if (error.isCleanup !== undefined && error.isCleanup) this._cleanup();
+      if (error.exitCode !== undefined) process.exit(error.exitCode);
       return;
     }
 
@@ -152,7 +155,7 @@ export class CreateAction {
     process.exit(1);
   };
 
-  public handle = async () => {
+  public handle = async (): Promise<void> => {
     printWelcomeMessage();
 
     try {
@@ -165,10 +168,13 @@ export class CreateAction {
       this._errorHandler(error);
     }
 
+    if (this._projectInfo === null) return;
+
     const relativeProjectDir = path.relative(
       process.cwd(),
-      this._projectInfo!.directory,
+      this._projectInfo.directory,
     );
+
     const projectDirIsCurrentDir = relativeProjectDir === '';
 
     if (projectDirIsCurrentDir) {

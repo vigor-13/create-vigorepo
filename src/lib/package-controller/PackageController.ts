@@ -6,15 +6,15 @@ interface PackageControllerProps {
 }
 
 export class PackageController {
-  private _logger: Logger;
-  private _appPath: string;
+  private readonly _logger: Logger;
+  private readonly _appPath: string;
 
   constructor(props: PackageControllerProps) {
     this._logger = new Logger();
     this._appPath = props.appPath;
   }
 
-  public installDependencies = async () => {
+  public installDependencies = async (): Promise<void> => {
     try {
       await execa('pnpm', ['install', '--fix-lockfile'], {
         cwd: this._appPath,

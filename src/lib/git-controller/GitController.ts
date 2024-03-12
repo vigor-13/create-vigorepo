@@ -7,14 +7,14 @@ interface GitControllerProps {
 }
 
 export class GitController {
-  private _appPath: string;
+  private readonly _appPath: string;
 
   constructor(props: GitControllerProps) {
     this._appPath = props.appPath;
     process.chdir(this._appPath);
   }
 
-  private _isInGitRepository = (): boolean => {
+  private readonly _isInGitRepository = (): boolean => {
     try {
       cp.execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
       return true;
@@ -23,7 +23,7 @@ export class GitController {
     return false;
   };
 
-  private _gitCommit = (commitMessage: string) => {
+  private readonly _gitCommit = (commitMessage: string): void => {
     cp.execSync(
       `git commit --author="bot <vigor13.dev@gmail.com>" -am "${commitMessage}"`,
       { stdio: 'ignore' },

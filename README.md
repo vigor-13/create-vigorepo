@@ -20,9 +20,10 @@ npx create-vigorepo@latest -t monorepo
 
 사용 가능한 템플릿은 다음과 같다.
 
-| 템플릿               | 설명            |
-| -------------------- | --------------- |
-| `polyrepo` (default) | 일반 레포지토리 |
-| `monorepo`           | 모노레포        |
+| 템플릿               | 설명                   |
+| -------------------- | ---------------------- |
+| `polyrepo` (default) | 일반 레포지토리        |
+| `polyrepo-nestjs`    | 기본 NestJS 레포지토리 |
+| `monorepo`           | 모노레포               |
 
 자세한 내용은 [깃헙 레포지토리](https://github.com/vigor-13/create-vigorepo/tree/main/templates)를 확인한다.
